@@ -11,7 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        //Registro de middlewares personalizados
+        $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
