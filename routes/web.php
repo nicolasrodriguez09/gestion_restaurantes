@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cafeagregar;
+use App\Http\Controllers\Mesero\MeseroController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,8 +19,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // ----------------- RUTAS PARA MESERO -----------------
 Route::middleware(['auth', 'role:mesero'])->prefix('mesero')->name('mesero.')->group(function () {
-    Route::get('pedidos', [MeseroController::class, 'index'])->name('pedidos.index');
-    
+    Route::get('dashboard', [MeseroController::class, 'index'])->name('dashboard');
+    Route::get('mesa/{id}', [MeseroController::class, 'show'])->name('mesa.show');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
