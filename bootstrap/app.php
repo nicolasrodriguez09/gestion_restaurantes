@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //Registro de middlewares personalizados
         $middleware->alias([
             'auth' => \App\Http\Middleware\Authenticate::class,
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })

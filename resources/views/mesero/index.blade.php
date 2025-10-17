@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-semibold mb-4">Panel Mesero</h1>
 
@@ -68,4 +66,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-app-layout>

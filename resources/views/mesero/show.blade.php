@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
 <div class="container mx-auto p-4">
     <a href="{{ route('mesero.dashboard') }}" class="text-sm text-blue-600 hover:underline">&larr; Volver al dashboard</a>
 
@@ -46,4 +44,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-app-layout>
