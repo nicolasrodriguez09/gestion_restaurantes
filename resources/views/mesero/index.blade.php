@@ -9,32 +9,47 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 @foreach($mesas as $mesa)
-                <a href="{{ route('mesero.mesa.show', $mesa->id) }}" class="block p-3 border rounded hover:shadow">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <div class="text-sm text-gray-500">Mesa</div>
-                            <div class="text-xl font-bold">#{{ $mesa->numeroMesa }}</div>
+                    @php
+                        $estado = strtolower($mesa->estado->nombreEstado ?? 'libre');
+                        $imagen = $estado === 'ocupada'
+                            ? asset('images/mesas/ocupada.png')
+                            : asset('images/mesas/libre.png');
+                    @endphp
+
+                    <a href="{{ route('mesero.mesa.show', $mesa->id) }}" class="block p-3 border rounded hover:shadow transition">
+                        <!-- Imagen del estado de la mesa -->
+                        <div class="flex justify-center mb-2">
+                            <img src="{{ $imagen }}" 
+                                 alt="Mesa {{ $mesa->numeroMesa }} {{ $estado }}"
+                                 class="w-20 h-20 object-contain">
                         </div>
 
-                        <div class="text-right">
-                            <div class="text-sm text-gray-500">Capacidad</div>
-                            <div class="font-medium">{{ $mesa->capacidad }}</div>
-                        </div>
-                    </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-500">Mesa</div>
+                                <div class="text-xl font-bold">#{{ $mesa->numeroMesa }}</div>
+                            </div>
 
-                    <div class="mt-2 flex justify-between items-center">
-                        <div class="text-xs">
-                            Estado:
-                            <span class="ml-1 font-semibold">
-                                {{ $mesa->estado->nombreEstado ?? 'N/A' }}
-                            </span>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Capacidad</div>
+                                <div class="font-medium">{{ $mesa->capacidad }}</div>
+                            </div>
                         </div>
 
-                        <div class="text-xs text-gray-500">
-                            Pedidos: {{ $mesa->pedidos->count() }}
+                        <div class="mt-2 flex justify-between items-center">
+                            <div class="text-xs">
+                                Estado:
+                                <span class="ml-1 font-semibold 
+                                    {{ $estado === 'ocupada' ? 'text-red-600' : 'text-green-600' }}">
+                                    {{ ucfirst($estado) }}
+                                </span>
+                            </div>
+
+                            <div class="text-xs text-gray-500">
+                                Pedidos: {{ $mesa->pedidos->count() }}
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
                 @endforeach
             </div>
         </div>
