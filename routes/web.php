@@ -21,6 +21,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:mesero'])->prefix('mesero')->name('mesero.')->group(function () {
     Route::get('dashboard', [MeseroController::class, 'index'])->name('dashboard');
     Route::get('mesa/{id}', [MeseroController::class, 'show'])->name('mesa.show');
+
+    // pantalla de armar pedido
+    Route::get('mesa/{id}/pedido/nuevo', [MeseroController::class, 'crearPedido'])->name('pedido.nuevo');
+
+    
+    Route::post('mesa/{id}/pedido/agregar', [MeseroController::class, 'agregarProducto'])->name('pedido.agregar');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -4,7 +4,12 @@
 
     <h1 class="text-2xl font-semibold mt-3 mb-4">Mesa #{{ $mesa->numeroMesa }}</h1>
 
+    <a href="{{ route('mesero.pedido.nuevo', $mesa->id) }}"
+            class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            Hacer pedido
+    </a>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-medium mb-2">Información</h2>
             <p><strong>Capacidad:</strong> {{ $mesa->capacidad }}</p>
