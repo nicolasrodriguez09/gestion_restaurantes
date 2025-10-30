@@ -5,13 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::orderBy('nombreProducto')->paginate(10);
-        return view('admin.productos.index', compact('productos'));
+        $q = $request->input('buscar');
+
+        $productos = Producto::query()
+            ->when($q, function ($query) use ($q) {
+                $query->where('nombreProducto', 'like', "%{$q}%")
+                      ->orWhere('categoria', 'like', "%{$q}%");
+            })
+            ->orderBy('nombreProducto')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.productos.index', compact('productos', 'q'));
     }
 
     public function create()
@@ -30,7 +41,10 @@ class ProductoController extends Controller
         ]);
 
         Producto::create($data);
-        return redirect()->route('admin.productos.index')->with('success','Producto creado');
+
+        return redirect()
+            ->route('admin.productos.index')
+            ->with('success', 'Producto creado correctamente');
     }
 
     public function edit(Producto $producto)
@@ -49,12 +63,18 @@ class ProductoController extends Controller
         ]);
 
         $producto->update($data);
-        return redirect()->route('admin.productos.index')->with('success','Producto actualizado');
+
+        return redirect()
+            ->route('admin.productos.index')
+            ->with('success', 'Producto actualizado');
     }
 
     public function destroy(Producto $producto)
     {
         $producto->delete();
-        return redirect()->route('admin.productos.index')->with('success','Producto eliminado');
+
+        return redirect()
+            ->route('admin.productos.index')
+            ->with('success', 'Producto eliminado');
     }
 }

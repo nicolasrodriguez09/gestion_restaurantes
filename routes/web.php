@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\MesaController as AdminMesaController;
+use App\Http\Controllers\Admin\ProductoController as AdminProductoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cafeagregar;
@@ -15,6 +18,9 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    Route::resource('mesas', AdminMesaController::class)->except(['show']);
+    Route::resource('productos', AdminProductoController::class)->except(['show']);
 });
 
 // ----------------- RUTAS PARA MESERO -----------------
@@ -36,6 +42,5 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::get('/cafecomprar', [cafeagregar::class, 'comprar'])->name('cafe.comprar');
 
 require __DIR__.'/auth.php';

@@ -17,7 +17,7 @@ class Mesa extends Model
 
     public function estado()
     {
-        return $this->belongsTo(EstadoMesa::class, 'id_estado');
+        return $this->belongsTo(\App\Models\EstadoMesa::class, 'id_estado');
     }
 
     public function pedidos()

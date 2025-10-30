@@ -6,20 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Mesa;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class MesaController extends Controller
 {
     public function index()
     {
-        $mesas = Mesa::orderBy('numeroMesa')->paginate(10);
+        $mesas = \App\Models\Mesa::with('estado')
+            ->orderBy('numeroMesa')
+            ->paginate(10);
+
         return view('admin.mesas.index', compact('mesas'));
     }
 
     public function create()
     {
-        // Para el select de estado podemos cargarlo luego;
-        // por ahora dejamos la vista lista para recibirlo.
-        return view('admin.mesas.create');
+        // [id => nombreEstado]
+        $estados = DB::table('estado_mesa')->pluck('nombreEstado', 'id');
+        return view('admin.mesas.create', compact('estados'));
     }
 
     public function store(Request $request)
@@ -37,7 +41,8 @@ class MesaController extends Controller
 
     public function edit(Mesa $mesa)
     {
-        return view('admin.mesas.edit', compact('mesa'));
+        $estados = DB::table('estado_mesa')->pluck('nombreEstado', 'id');
+        return view('admin.mesas.edit', compact('mesa','estados'));
     }
 
     public function update(Request $request, Mesa $mesa)
