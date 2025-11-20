@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,14 +30,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = auth()->user();
+        $redirectTo = $this->redirectPathFor($user);
 
-        if ($user->role === 'admin') {
-            return redirect()->intended('/admin/dashboard');
-        } elseif ($user->role === 'mesero') {
-            return redirect()->intended('/mesero/dashboard');
-        } else {
-            return redirect()->intended('/'); // ruta por defecto
-        }
+        return redirect()->intended($redirectTo);
     }
 
     /**
@@ -51,5 +47,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Resolve la ruta a donde debe ir el usuario segun su rol.
+     */
+    private function redirectPathFor(User $user): string
+    {
+        return match ($user->role) {
+            'admin' => route('admin.dashboard'),
+            'mesero' => route('mesero.dashboard'),
+            default => route('dashboard'),
+        };
     }
 }

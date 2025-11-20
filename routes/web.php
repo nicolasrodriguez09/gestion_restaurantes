@@ -13,7 +13,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = auth()->user();
+
+    return match ($user->role) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'mesero' => redirect()->route('mesero.dashboard'),
+        default => view('dashboard'),
+    };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

@@ -45,6 +45,18 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->intended($this->redirectPathFor($user));
+    }
+
+    /**
+     * Resolve la ruta a donde debe ir el usuario segun su rol.
+     */
+    private function redirectPathFor(User $user): string
+    {
+        return match ($user->role) {
+            'admin' => route('admin.dashboard'),
+            'mesero' => route('mesero.dashboard'),
+            default => route('dashboard'),
+        };
     }
 }
