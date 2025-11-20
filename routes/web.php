@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('mesas', AdminMesaController::class)->except(['show']);
     Route::resource('productos', AdminProductoController::class)->except(['show']);
     Route::resource('meseros', \App\Http\Controllers\Admin\MeseroGestionController::class);
+    Route::get('cocina', [\App\Http\Controllers\Admin\CocinaController::class, 'index'])->name('cocina.index');
 });
 
 // ----------------- RUTAS PARA MESERO -----------------

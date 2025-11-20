@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.productos.update', $producto) }}" method="POST" class="bg-white shadow rounded p-6 space-y-4">
+        <form action="{{ route('admin.productos.update', $producto) }}" method="POST" enctype="multipart/form-data" class="bg-white shadow rounded p-6 space-y-4">
             @csrf @method('PUT')
 
             <div>
@@ -41,6 +41,16 @@
                 <label class="block text-sm font-medium">Disponibilidad (unidades)</label>
                 <input type="number" name="disponibilidad" value="{{ old('disponibilidad', (int)$producto->disponibilidad) }}" class="mt-1 w-full border rounded px-3 py-2" min="0" required>
                 <p class="text-xs text-gray-500 mt-1">Cantidad de unidades disponibles para venta.</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Imagen del producto</label>
+                <input type="file" name="imagen" accept="image/*" class="mt-1 w-full border rounded px-3 py-2">
+                @if ($producto->imagen)
+                    <p class="text-xs text-gray-500 mt-1">Imagen actual:</p>
+                    <img src="{{ asset('storage/'.$producto->imagen) }}" alt="Imagen {{ $producto->nombreProducto }}" class="mt-2 h-24 w-24 rounded object-cover border">
+                @endif
+                <p class="text-xs text-gray-500 mt-1">Si subes una nueva, reemplazara la existente. Max 2MB.</p>
             </div>
 
             <div class="flex gap-3">

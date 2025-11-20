@@ -14,6 +14,7 @@ class Producto extends Model
         'precio',
         'categoria',
         'disponibilidad',
+        'imagen',
     ];
 
     public function detalles()

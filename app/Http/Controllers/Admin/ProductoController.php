@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
@@ -40,7 +41,12 @@ class ProductoController extends Controller
             'precio'         => ['required','numeric','min:0'],
             'categoria'      => ['nullable','string','max:60'],
             'disponibilidad' => ['required','integer','min:0'],
+            'imagen'         => ['nullable','image','max:2048'],
         ]);
+
+        if ($request->hasFile('imagen')) {
+            $data['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         Producto::create($data);
 
@@ -62,7 +68,15 @@ class ProductoController extends Controller
             'precio'         => ['required','numeric','min:0'],
             'categoria'      => ['nullable','string','max:60'],
             'disponibilidad' => ['required','integer','min:0'],
+            'imagen'         => ['nullable','image','max:2048'],
         ]);
+
+        if ($request->hasFile('imagen')) {
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+            $data['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         $producto->update($data);
 

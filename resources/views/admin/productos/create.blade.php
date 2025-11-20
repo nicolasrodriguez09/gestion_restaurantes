@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.productos.store') }}" method="POST" class="bg-white shadow rounded p-6 space-y-4">
+        <form action="{{ route('admin.productos.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow rounded p-6 space-y-4">
             @csrf
 
             <div>
@@ -41,6 +41,12 @@
                 <label class="block text-sm font-medium">Disponibilidad (unidades)</label>
                 <input type="number" name="disponibilidad" value="{{ old('disponibilidad', 0) }}" class="mt-1 w-full border rounded px-3 py-2" min="0" required>
                 <p class="text-xs text-gray-500 mt-1">Cantidad de unidades disponibles para venta.</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Imagen del producto</label>
+                <input type="file" name="imagen" accept="image/*" class="mt-1 w-full border rounded px-3 py-2">
+                <p class="text-xs text-gray-500 mt-1">Opcional. JPG/PNG hasta 2MB.</p>
             </div>
 
             <div class="flex gap-3">

@@ -1,9 +1,9 @@
 <x-app-layout>
 <div class="container mx-auto p-4">
-    {{-- Título y volver --}}
+    {{-- Titulo y volver --}}
     <div class="flex items-center justify-between mb-4">
         <h1 class="text-2xl font-semibold">
-            Nuevo pedido — Mesa #{{ $mesa->numeroMesa }}
+            Nuevo pedido - Mesa #{{ $mesa->numeroMesa }}
         </h1>
         <a href="{{ route('mesero.mesa.show', $mesa->id) }}"
            class="text-blue-600 hover:underline">Volver a la mesa</a>
@@ -22,9 +22,9 @@
         </div>
     @endif
 
-    {{-- (Debug) Muestra la URL a la que se hará POST --}}
+    {{-- (Debug) Muestra la URL a la que se hara POST --}}
     <div class="mb-2 text-xs text-gray-500">
-        Acción POST a: <code>{{ route('mesero.pedido.agregar', $mesa->id) }}</code>
+        Accion POST a: <code>{{ route('mesero.pedido.agregar', $mesa->id) }}</code>
     </div>
 
     {{-- Productos disponibles --}}
@@ -36,18 +36,27 @@
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($productos as $prod)
-                    <div class="border rounded p-3 hover:shadow transition">
-                        <div class="font-semibold">{{ $prod->nombreProducto }}</div>
-                        <div class="text-sm text-gray-500 mb-1">{{ $prod->descripcion }}</div>
-                        <div class="text-sm text-gray-700 font-medium mb-2">
-                            ${{ number_format($prod->precio, 0, ',', '.') }}
+                    <div class="border rounded p-3 hover:shadow transition bg-white flex flex-col gap-2">
+                        <div class="h-32 w-full overflow-hidden rounded-lg bg-gray-50 flex items-center justify-center">
+                            @if ($prod->imagen)
+                                <img src="{{ asset('storage/'.$prod->imagen) }}" alt="Imagen {{ $prod->nombreProducto }}" class="h-full w-full object-cover">
+                            @else
+                                <span class="text-xs text-gray-400">Sin imagen</span>
+                            @endif
                         </div>
-                        <div class="text-xs text-gray-500 mb-2">Categoría: {{ $prod->categoria }}</div>
+                        <div>
+                            <div class="font-semibold">{{ $prod->nombreProducto }}</div>
+                            <div class="text-sm text-gray-500 mb-1">{{ $prod->descripcion }}</div>
+                            <div class="text-sm text-gray-700 font-medium mb-1">
+                                ${{ number_format($prod->precio, 0, ',', '.') }}
+                            </div>
+                            <div class="text-xs text-gray-500">Categoria: {{ $prod->categoria }}</div>
+                        </div>
 
                         {{-- Formulario para agregar (POST forzado) --}}
                         <form method="POST"
                               action="{{ route('mesero.pedido.agregar', $mesa->id) }}"
-                              class="flex items-center gap-2">
+                              class="flex items-center gap-2 mt-auto">
                             @csrf
                             <input type="hidden" name="producto_id" value="{{ $prod->id }}">
                             <input type="number" name="cantidad" value="1" min="1"

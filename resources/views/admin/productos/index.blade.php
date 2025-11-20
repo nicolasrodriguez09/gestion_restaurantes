@@ -86,6 +86,7 @@
                     <thead>
                         <tr class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                             <th class="px-4 py-3">Producto</th>
+                            <th class="px-4 py-3">Imagen</th>
                             <th class="px-4 py-3">Categoria</th>
                             <th class="px-4 py-3">Precio</th>
                             <th class="px-4 py-3">Cantidad</th>
@@ -99,6 +100,13 @@
                                 <td class="px-4 py-4">
                                     <p class="font-semibold text-gray-900">{{ $producto->nombreProducto }}</p>
                                     <p class="text-xs text-gray-500">ID #{{ $producto->id }}</p>
+                                </td>
+                                <td class="px-4 py-4">
+                                    @if ($producto->imagen)
+                                        <img src="{{ asset('storage/'.$producto->imagen) }}" alt="Imagen {{ $producto->nombreProducto }}" class="h-14 w-14 rounded object-cover border">
+                                    @else
+                                        <span class="text-xs text-gray-500">Sin imagen</span>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-4">
                                     <p class="font-semibold text-gray-900">{{ $producto->categoria ?? 'Sin categoria' }}</p>
