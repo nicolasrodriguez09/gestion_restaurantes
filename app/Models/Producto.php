@@ -21,4 +21,3 @@ class Producto extends Model
         return $this->hasMany(DetallePedido::class, 'id_producto');
     }
 }
-

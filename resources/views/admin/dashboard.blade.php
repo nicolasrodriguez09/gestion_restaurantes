@@ -69,19 +69,19 @@
 
             <div class="grid gap-6 md:grid-cols-3">
                 <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                    <p class="text-sm text-gray-500">{{ __('Pedidos activos') }}</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">18</p>
-                    <p class="mt-1 text-xs text-gray-400">{{ __('Actualizado hace 5 min') }}</p>
+                    <p class="text-sm text-gray-500">Productos publicados</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $totalProductos }}</p>
+                    <p class="mt-1 text-xs text-gray-400">Con stock: {{ $productosConStock }} ({{ $unidadesDisponibles }} unidades)</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                    <p class="text-sm text-gray-500">{{ __('Capacidad ocupada') }}</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">74%</p>
-                    <p class="mt-1 text-xs text-gray-400">{{ __('Basado en mesas registradas') }}</p>
+                    <p class="text-sm text-gray-500">Capacidad ocupada</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $porcentajeOcupacion }}%</p>
+                    <p class="mt-1 text-xs text-gray-400">{{ $mesasOcupadas }} de {{ $mesasTotales }} mesas en uso</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-6">
-                    <p class="text-sm text-gray-500">{{ __('Productos publicados') }}</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">42</p>
-                    <p class="mt-1 text-xs text-gray-400">{{ __('Incluye platos y bebidas') }}</p>
+                    <p class="text-sm text-gray-500">Pedidos activos</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $pedidosActivos }}</p>
+                    <p class="mt-1 text-xs text-gray-400">Estados activos / en curso / pendientes</p>
                 </div>
             </div>
         </div>

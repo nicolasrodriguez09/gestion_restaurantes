@@ -7,10 +7,13 @@
     </x-slot>
 
     @php
-        $totalProductos = method_exists($productos, 'total') ? $productos->total() : $productos->count();
-        $porPagina = method_exists($productos, 'perPage') ? $productos->perPage() : $productos->count();
+        $totalProductos = $stats['total'] ?? 0;
+        $totalDisponibles = $stats['disponibles'] ?? 0; // unidades disponibles globales
+        $comidas = $stats['comidas'] ?? ['total' => 0, 'disponibles' => 0];
+        $bebidas = $stats['bebidas'] ?? ['total' => 0, 'disponibles' => 0];
+
         $itemsPagina = method_exists($productos, 'items') ? collect($productos->items()) : collect($productos);
-        $disponiblesPagina = $itemsPagina->where('disponibilidad', true)->count();
+        $disponiblesPagina = $itemsPagina->sum('disponibilidad');
     @endphp
 
     <div class="py-10 max-w-7xl mx-auto px-6 lg:px-8 space-y-6">
@@ -37,16 +40,23 @@
                 <p class="text-xs text-gray-400 mt-1">Platos, bebidas y complementos</p>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p class="text-sm text-gray-500">Disponibles en esta página</p>
-                <p class="mt-2 text-3xl font-semibold text-gray-900">{{ $disponiblesPagina }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ $itemsPagina->count() }} totales en la página</p>
+                <p class="text-sm text-gray-500">Unidades disponibles (global)</p>
+                <p class="mt-2 text-3xl font-semibold text-gray-900">{{ $totalDisponibles }}</p>
+                <p class="text-xs text-gray-400 mt-1">{{ $disponiblesPagina }} unidades en esta pagina · {{ $itemsPagina->count() }} productos listados</p>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p class="text-sm text-gray-500">Filtro aplicado</p>
-                <p class="mt-2 text-lg font-semibold text-gray-900">
-                    {{ $q ? '“'.$q.'”' : 'Sin filtros' }}
-                </p>
-                <p class="text-xs text-gray-400 mt-1">Busca por nombre o categoría</p>
+                <p class="text-sm text-gray-500">Unidades por tipo</p>
+                <div class="mt-2 space-y-1 text-sm text-gray-700">
+                    <p class="flex items-center justify-between">
+                        <span class="font-semibold">Comidas</span>
+                        <span>{{ $comidas['disponibles'] }} / {{ $comidas['total'] }}</span>
+                    </p>
+                    <p class="flex items-center justify-between">
+                        <span class="font-semibold">Bebidas</span>
+                        <span>{{ $bebidas['disponibles'] }} / {{ $bebidas['total'] }}</span>
+                    </p>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">Unidades disponibles registradas</p>
             </div>
         </div>
 
@@ -58,7 +68,7 @@
                         <div class="flex rounded-2xl border border-slate-200 bg-white focus-within:border-indigo-400">
                             <input id="buscar" name="buscar" value="{{ $q }}"
                                    class="w-full rounded-2xl border-none px-4 py-2 text-sm focus:ring-0"
-                                   placeholder="Ej. pasta, bebidas frías">
+                                   placeholder="Ej. pasta, bebidas frias">
                             <button class="mr-1 my-1 rounded-2xl bg-indigo-600 px-4 text-sm font-semibold text-white hover:bg-indigo-700">
                                 Aplicar
                             </button>
@@ -76,12 +86,13 @@
                     <thead>
                         <tr class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                             <th class="px-4 py-3">Producto</th>
-                            <th class="px-4 py-3">Categoría</th>
+                            <th class="px-4 py-3">Categoria</th>
                             <th class="px-4 py-3">Precio</th>
-                            <th class="px-4 py-3">Disponibilidad</th>
-                            <th class="px-4 py-3 text-right">Acciones</th>
-                        </tr>
-                    </thead>
+                            <th class="px-4 py-3">Cantidad</th>
+                            <th class="px-4 py-3">Estado</th>
+            <th class="px-4 py-3 text-right">Acciones</th>
+        </tr>
+    </thead>
                     <tbody class="divide-y divide-slate-100 bg-white">
                         @forelse ($productos as $producto)
                             <tr class="hover:bg-slate-50 transition">
@@ -90,22 +101,26 @@
                                     <p class="text-xs text-gray-500">ID #{{ $producto->id }}</p>
                                 </td>
                                 <td class="px-4 py-4">
-                                    <p class="font-semibold text-gray-900">{{ $producto->categoria ?? 'Sin categoría' }}</p>
-                                    <p class="text-xs text-gray-500">Clasificación</p>
+                                    <p class="font-semibold text-gray-900">{{ $producto->categoria ?? 'Sin categoria' }}</p>
+                                    <p class="text-xs text-gray-500">Clasificacion</p>
                                 </td>
                                 <td class="px-4 py-4">
                                     <p class="font-semibold text-gray-900">${{ number_format($producto->precio, 2, '.', ',') }}</p>
                                     <p class="text-xs text-gray-500">Precio venta</p>
                                 </td>
                                 <td class="px-4 py-4">
+                                    <p class="font-semibold text-gray-900">{{ $producto->disponibilidad }}</p>
+                                    <p class="text-xs text-gray-500">Unidades</p>
+                                </td>
+                                <td class="px-4 py-4">
                                     @php
-                                        $disponible = (bool) $producto->disponibilidad;
+                                        $disponible = (int) $producto->disponibilidad > 0;
                                         $badgeClasses = $disponible
                                             ? 'bg-emerald-100 text-emerald-700'
                                             : 'bg-rose-100 text-rose-700';
                                     @endphp
                                     <span class="inline-flex items-center rounded-2xl px-3 py-1 text-xs font-semibold {{ $badgeClasses }}">
-                                        {{ $disponible ? 'Disponible' : 'No disponible' }}
+                                        {{ $disponible ? 'Disponible' : 'Agotado' }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-4">

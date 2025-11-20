@@ -23,7 +23,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Descripción</label>
+                <label class="block text-sm font-medium">Descripcion</label>
                 <textarea name="descripcion" rows="3" class="mt-1 w-full border rounded px-3 py-2">{{ old('descripcion') }}</textarea>
             </div>
 
@@ -33,16 +33,14 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Categoría</label>
+                <label class="block text-sm font-medium">Categoria</label>
                 <input type="text" name="categoria" value="{{ old('categoria') }}" class="mt-1 w-full border rounded px-3 py-2" maxlength="60" placeholder="Bebidas, Platos, Postres...">
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Disponible</label>
-                <select name="disponibilidad" class="mt-1 w-full border rounded px-3 py-2" required>
-                    <option value="1" @selected(old('disponibilidad') === '1')>Sí</option>
-                    <option value="0" @selected(old('disponibilidad') === '0')>No</option>
-                </select>
+                <label class="block text-sm font-medium">Disponibilidad (unidades)</label>
+                <input type="number" name="disponibilidad" value="{{ old('disponibilidad', 0) }}" class="mt-1 w-full border rounded px-3 py-2" min="0" required>
+                <p class="text-xs text-gray-500 mt-1">Cantidad de unidades disponibles para venta.</p>
             </div>
 
             <div class="flex gap-3">

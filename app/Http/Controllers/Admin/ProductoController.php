@@ -22,7 +22,9 @@ class ProductoController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.productos.index', compact('productos', 'q'));
+        $stats = $this->buildAvailabilityStats();
+
+        return view('admin.productos.index', compact('productos', 'q', 'stats'));
     }
 
     public function create()
@@ -37,7 +39,7 @@ class ProductoController extends Controller
             'descripcion'    => ['nullable','string'],
             'precio'         => ['required','numeric','min:0'],
             'categoria'      => ['nullable','string','max:60'],
-            'disponibilidad' => ['required','boolean'],
+            'disponibilidad' => ['required','integer','min:0'],
         ]);
 
         Producto::create($data);
@@ -59,7 +61,7 @@ class ProductoController extends Controller
             'descripcion'    => ['nullable','string'],
             'precio'         => ['required','numeric','min:0'],
             'categoria'      => ['nullable','string','max:60'],
-            'disponibilidad' => ['required','boolean'],
+            'disponibilidad' => ['required','integer','min:0'],
         ]);
 
         $producto->update($data);
@@ -76,5 +78,34 @@ class ProductoController extends Controller
         return redirect()
             ->route('admin.productos.index')
             ->with('success', 'Producto eliminado');
+    }
+
+    /**
+     * Calcula los totales generales y por tipo (comidas/bebidas) de productos disponibles.
+     */
+    private function buildAvailabilityStats(): array
+    {
+        $total = Producto::count();
+        $sumDisponibles = Producto::sum('disponibilidad');
+
+        $bebidasQuery = Producto::whereRaw('LOWER(categoria) LIKE ?', ['%bebida%']);
+        $bebidasTotal = (clone $bebidasQuery)->count();
+        $bebidasDisponibles = (clone $bebidasQuery)->sum('disponibilidad');
+
+        $comidasTotal = $total - $bebidasTotal;
+        $comidasDisponibles = $sumDisponibles - $bebidasDisponibles;
+
+        return [
+            'total' => $total,
+            'disponibles' => $sumDisponibles,
+            'bebidas' => [
+                'total' => $bebidasTotal,
+                'disponibles' => $bebidasDisponibles,
+            ],
+            'comidas' => [
+                'total' => $comidasTotal,
+                'disponibles' => $comidasDisponibles,
+            ],
+        ];
     }
 }
