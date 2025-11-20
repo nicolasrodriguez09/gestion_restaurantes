@@ -41,6 +41,9 @@ Route::middleware(['auth', 'role:mesero'])->prefix('mesero')->name('mesero.')->g
 
     
     Route::post('mesa/{id}/pedido/agregar', [MeseroController::class, 'agregarProducto'])->name('pedido.agregar');
+    Route::post('mesa/{id}/pedido/detalle/{detalle}/actualizar', [MeseroController::class, 'actualizarDetalle'])->name('pedido.detalle.actualizar');
+    Route::post('mesa/{id}/pedido/cancelar', [MeseroController::class, 'cancelarPedido'])->name('pedido.cancelar');
+    Route::post('mesa/{id}/pedido/cerrar', [MeseroController::class, 'cerrarPedido'])->name('pedido.cerrar');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

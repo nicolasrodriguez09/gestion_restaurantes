@@ -90,6 +90,32 @@
                         </div>
                     </div>
                 </a>
+
+                <a href="{{ route('admin.cocina.index') }}"
+                   class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="p-6 relative">
+                        <div class="flex items-center gap-4">
+                            <span class="p-3 rounded-2xl bg-orange-100 text-orange-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v5c0 5-3.5 7-8 9-4.5-2-8-4-8-9V7l8-4z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="text-sm text-gray-500">Cocina</p>
+                                <h3 class="text-xl font-bold text-gray-900">Preparacion y pases</h3>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600">Visualiza pedidos en espera, en proceso y listos para entrega.</p>
+                        <div class="mt-6 flex items-center justify-between text-sm font-semibold text-orange-600">
+                            <span>Ir a cocina</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <div class="grid gap-6 md:grid-cols-3">

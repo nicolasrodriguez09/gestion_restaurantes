@@ -1,72 +1,67 @@
 <x-app-layout>
-<div class="container mx-auto p-4">
-    {{-- Titulo y volver --}}
-    <div class="flex items-center justify-between mb-4">
-        <h1 class="text-2xl font-semibold">
-            Nuevo pedido - Mesa #{{ $mesa->numeroMesa }}
-        </h1>
+<div class="max-w-7xl mx-auto px-6 py-8 space-y-4">
+    <div class="flex items-center justify-between gap-3">
+        <div>
+            <p class="text-sm text-slate-500">Armar pedido</p>
+            <h1 class="text-2xl font-bold text-slate-900">Mesa #{{ $mesa->numeroMesa }}</h1>
+        </div>
         <a href="{{ route('mesero.mesa.show', $mesa->id) }}"
-           class="text-blue-600 hover:underline">Volver a la mesa</a>
+           class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-200 hover:text-indigo-700">Volver a la mesa</a>
     </div>
 
-    {{-- Mensajes flash --}}
     @if(session('ok'))
-        <div class="mb-3 p-3 rounded bg-green-100 text-green-700">
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 text-sm">
             {{ session('ok') }}
         </div>
     @endif
-
     @if(session('error'))
-        <div class="mb-3 p-3 rounded bg-red-100 text-red-700">
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-800 text-sm">
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- (Debug) Muestra la URL a la que se hara POST --}}
-    <div class="mb-2 text-xs text-gray-500">
-        Accion POST a: <code>{{ route('mesero.pedido.agregar', $mesa->id) }}</code>
-    </div>
-
-    {{-- Productos disponibles --}}
-    <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="text-lg font-medium mb-3">Productos disponibles</h2>
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-sm p-5">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-slate-900">Productos disponibles</h2>
+            <span class="text-xs rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $productos->count() }}</span>
+        </div>
 
         @if($productos->isEmpty())
             <div class="text-sm text-gray-500">No hay productos configurados.</div>
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($productos as $prod)
-                    <div class="border rounded p-3 hover:shadow transition bg-white flex flex-col gap-2">
-                        <div class="h-32 w-full overflow-hidden rounded-lg bg-gray-50 flex items-center justify-center">
+                    <div class="rounded-2xl border border-slate-100 p-3 hover:shadow-md transition bg-white flex flex-col gap-2">
+                        <div class="h-32 w-full overflow-hidden rounded-xl bg-slate-50 flex items-center justify-center">
                             @if ($prod->imagen)
                                 <img src="{{ asset('storage/'.$prod->imagen) }}" alt="Imagen {{ $prod->nombreProducto }}" class="h-full w-full object-cover">
                             @else
                                 <span class="text-xs text-gray-400">Sin imagen</span>
                             @endif
                         </div>
-                        <div>
-                            <div class="font-semibold">{{ $prod->nombreProducto }}</div>
-                            <div class="text-sm text-gray-500 mb-1">{{ $prod->descripcion }}</div>
-                            <div class="text-sm text-gray-700 font-medium mb-1">
+                        <div class="space-y-1">
+                            <div class="font-semibold text-slate-900">{{ $prod->nombreProducto }}</div>
+                            <div class="text-sm text-slate-500 line-clamp-2">{{ $prod->descripcion }}</div>
+                            <div class="text-sm font-semibold text-slate-900">
                                 ${{ number_format($prod->precio, 0, ',', '.') }}
                             </div>
-                            <div class="text-xs text-gray-500">Categoria: {{ $prod->categoria }}</div>
+                            <div class="text-xs text-slate-500">Categoria: {{ $prod->categoria }}</div>
+                            <div class="text-xs text-emerald-700">Stock: {{ $prod->disponibilidad }}</div>
                         </div>
 
-                        {{-- Formulario para agregar (POST forzado) --}}
                         <form method="POST"
                               action="{{ route('mesero.pedido.agregar', $mesa->id) }}"
                               class="flex items-center gap-2 mt-auto">
                             @csrf
                             <input type="hidden" name="producto_id" value="{{ $prod->id }}">
                             <input type="number" name="cantidad" value="1" min="1"
-                                   class="w-16 border rounded px-2 py-1 text-center" required>
+                                   class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500" required>
 
                             <button
                                 type="submit"
                                 formmethod="post"
                                 formaction="{{ route('mesero.pedido.agregar', $mesa->id) }}"
-                                class="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                                class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition text-sm font-semibold">
                                 Agregar
                             </button>
                         </form>
