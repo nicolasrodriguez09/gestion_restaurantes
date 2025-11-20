@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EstadoPedido;
 use App\Models\Pedido;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class CocinaController extends Controller
 {
@@ -26,6 +27,18 @@ class CocinaController extends Controller
         $proceso = $pedidos->whereIn('id_estadoPedido', $catProceso->keys());
         $listo = $pedidos->whereIn('id_estadoPedido', $catListo->keys());
 
-        return view('admin.cocina.index', compact('espera', 'proceso', 'listo'));
+        return view('admin.cocina.index', compact('espera', 'proceso', 'listo', 'catEsperando', 'catProceso', 'catListo'));
+    }
+
+    public function cambiarEstado(Request $request, Pedido $pedido)
+    {
+        $request->validate([
+            'estado_id' => 'required|exists:estado_pedido,id',
+        ]);
+
+        $pedido->id_estadoPedido = $request->estado_id;
+        $pedido->save();
+
+        return back()->with('ok', 'Estado actualizado.');
     }
 }

@@ -29,6 +29,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('productos', AdminProductoController::class)->except(['show']);
     Route::resource('meseros', \App\Http\Controllers\Admin\MeseroGestionController::class);
     Route::get('cocina', [\App\Http\Controllers\Admin\CocinaController::class, 'index'])->name('cocina.index');
+    Route::post('cocina/pedidos/{pedido}/estado', [\App\Http\Controllers\Admin\CocinaController::class, 'cambiarEstado'])->name('cocina.pedidos.estado');
 });
 
 // ----------------- RUTAS PARA MESERO -----------------

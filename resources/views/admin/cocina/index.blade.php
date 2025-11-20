@@ -37,6 +37,16 @@
                                     </li>
                                 @endforeach
                             </ul>
+                            @php $estadoProcesoDefault = $catProceso->first(); @endphp
+                            <form action="{{ route('admin.cocina.pedidos.estado', $pedido) }}" method="POST" class="mt-3">
+                                @csrf
+                                @if($estadoProcesoDefault)
+                                    <input type="hidden" name="estado_id" value="{{ $estadoProcesoDefault->id }}">
+                                    <button class="w-full rounded bg-indigo-600 text-white text-sm font-semibold py-1.5 hover:bg-indigo-700">Mover a proceso</button>
+                                @else
+                                    <button class="w-full rounded bg-slate-200 text-slate-500 text-sm font-semibold py-1.5" disabled>Sin estado destino</button>
+                                @endif
+                            </form>
                         </div>
                     @empty
                         <p class="text-sm text-gray-500">Sin pedidos en espera.</p>
@@ -70,6 +80,16 @@
                                     </li>
                                 @endforeach
                             </ul>
+                            @php $estadoListoDefault = $catListo->first(); @endphp
+                            <form action="{{ route('admin.cocina.pedidos.estado', $pedido) }}" method="POST" class="mt-3">
+                                @csrf
+                                @if($estadoListoDefault)
+                                    <input type="hidden" name="estado_id" value="{{ $estadoListoDefault->id }}">
+                                    <button class="w-full rounded bg-emerald-600 text-white text-sm font-semibold py-1.5 hover:bg-emerald-700">Mover a listo</button>
+                                @else
+                                    <button class="w-full rounded bg-slate-200 text-slate-500 text-sm font-semibold py-1.5" disabled>Sin estado destino</button>
+                                @endif
+                            </form>
                         </div>
                     @empty
                         <p class="text-sm text-gray-500">Sin pedidos en proceso.</p>
@@ -103,6 +123,16 @@
                                     </li>
                                 @endforeach
                             </ul>
+                            @php $estadoProcesoDefault = $catProceso->first(); @endphp
+                            <form action="{{ route('admin.cocina.pedidos.estado', $pedido) }}" method="POST" class="mt-3">
+                                @csrf
+                                @if($estadoProcesoDefault)
+                                    <input type="hidden" name="estado_id" value="{{ $estadoProcesoDefault->id }}">
+                                    <button class="w-full rounded bg-slate-800 text-white text-sm font-semibold py-1.5 hover:bg-slate-900">Revertir a proceso</button>
+                                @else
+                                    <button class="w-full rounded bg-slate-200 text-slate-500 text-sm font-semibold py-1.5" disabled>Sin estado destino</button>
+                                @endif
+                            </form>
                         </div>
                     @empty
                         <p class="text-sm text-gray-500">Sin pedidos listos.</p>
