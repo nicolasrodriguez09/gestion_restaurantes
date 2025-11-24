@@ -91,6 +91,31 @@
                     </div>
                 </a>
 
+                <a href="{{ route('admin.domiciliarios.index') }}"
+                   class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="p-6 relative">
+                        <div class="flex items-center gap-4">
+                            <span class="p-3 rounded-2xl bg-sky-100 text-sky-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h2l1.5 9a2 2 0 002 1.7h7a2 2 0 002-1.7L19 7h2m-8 4h3m-5 4h5M9 9h1m3 0h1" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="text-sm text-gray-500">Equipo de ruta</p>
+                                <h3 class="text-xl font-bold text-gray-900">Gestion de domiciliarios</h3>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600">Crea y controla repartidores, asigna pedidos y revisa entregas realizadas.</p>
+                        <div class="mt-6 flex items-center justify-between text-sm font-semibold text-sky-600">
+                            <span>Administrar domiciliarios</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+
                 <a href="{{ route('admin.cocina.index') }}"
                    class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-transparent opacity-0 group-hover:opacity-100 transition"></div>

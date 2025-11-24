@@ -18,8 +18,13 @@
             </div>
         @endif
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @forelse($pedidos as $pedido)
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Por entregar</h3>
+                <span class="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700">Pendientes: {{ $pendientes->count() }}</span>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @forelse($pendientes as $pedido)
                 @php
                     $estado = strtolower($pedido->estado->nombreEstado ?? '');
                     $badge = str_contains($estado, 'listo') ? 'bg-emerald-100 text-emerald-700' :
@@ -57,6 +62,43 @@
             @empty
                 <div class="col-span-full text-sm text-slate-500">No hay pedidos de domicilio.</div>
             @endforelse
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-slate-900">Entregados</h3>
+                <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Total: {{ $entregados->count() }}</span>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                @forelse($entregados as $pedido)
+                    @php
+                        $estado = strtolower($pedido->estado->nombreEstado ?? '');
+                        $badge = str_contains($estado, 'listo') ? 'bg-emerald-100 text-emerald-700' :
+                                 (str_contains($estado, 'espera') ? 'bg-amber-100 text-amber-700' :
+                                 (str_contains($estado, 'entreg') ? 'bg-slate-200 text-slate-700' : 'bg-slate-100 text-slate-700'));
+                    @endphp
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs text-slate-500">Pedido #{{ $pedido->id }}</p>
+                                <p class="text-sm font-semibold text-slate-900">{{ $pedido->cliente_nombre ?? 'Cliente' }}</p>
+                                <p class="text-xs text-slate-500">{{ $pedido->cliente_direccion ?? 'Direccion N/D' }}</p>
+                            </div>
+                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $badge }}">
+                                {{ $pedido->estado->nombreEstado ?? 'N/A' }}
+                            </span>
+                        </div>
+                        <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+                            <span>{{ \Carbon\Carbon::parse($pedido->fechaPedido)->format('d/m H:i') }}</span>
+                            <span class="font-semibold text-slate-900 text-sm">${{ number_format($pedido->totalPago, 2, '.', ',') }}</span>
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">Productos: {{ $pedido->detalles->count() }}</div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-sm text-slate-500">Aun no hay entregas registradas.</div>
+                @endforelse
+            </div>
         </div>
     </div>
 </x-app-layout>

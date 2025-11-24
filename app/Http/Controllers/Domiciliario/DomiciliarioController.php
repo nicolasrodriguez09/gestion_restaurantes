@@ -13,12 +13,19 @@ class DomiciliarioController extends Controller
 {
     public function index()
     {
-        $pedidos = Pedido::with(['detalles.producto','estado'])
+        $baseQuery = Pedido::with(['detalles.producto','estado'])
             ->whereHas('mesa', fn($q) => $q->where('numeroMesa', 9999))
-            ->orderByDesc('fechaPedido')
+            ->orderByDesc('fechaPedido');
+
+        $pendientes = (clone $baseQuery)
+            ->whereDoesntHave('estado', fn($e) => $e->where('nombreEstado', 'Entregado'))
             ->get();
 
-        return view('domiciliario.dashboard', compact('pedidos'));
+        $entregados = (clone $baseQuery)
+            ->whereHas('estado', fn($e) => $e->where('nombreEstado', 'Entregado'))
+            ->get();
+
+        return view('domiciliario.dashboard', compact('pendientes', 'entregados'));
     }
 
     public function show($id)
