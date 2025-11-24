@@ -20,55 +20,124 @@
         </div>
     @endif
 
-    <div class="rounded-3xl border border-slate-200 bg-white shadow-sm p-5">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-slate-900">Productos disponibles</h2>
-            <span class="text-xs rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $productos->count() }}</span>
+    @php
+        $bebidas = $productos->filter(fn($p) => str_contains(strtolower($p->categoria ?? ''), 'bebida'));
+        $comidas = $productos->diff($bebidas);
+    @endphp
+
+    <div class="grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
+            <p class="text-xs text-slate-500">Total items</p>
+            <p class="text-2xl font-bold text-slate-900">{{ $productos->count() }}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
+            <p class="text-xs text-slate-500">Comidas</p>
+            <p class="text-2xl font-bold text-slate-900">{{ $comidas->count() }}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
+            <p class="text-xs text-slate-500">Bebidas</p>
+            <p class="text-2xl font-bold text-slate-900">{{ $bebidas->count() }}</p>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <div class="rounded-3xl border border-slate-200 bg-white shadow-sm p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-slate-900">Comidas</h2>
+                <span class="text-xs rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $comidas->count() }}</span>
+            </div>
+            @if($comidas->isEmpty())
+                <div class="text-sm text-gray-500">No hay comidas configuradas.</div>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($comidas as $prod)
+                        <div class="rounded-2xl border border-slate-100 p-3 hover:shadow-md transition bg-white flex flex-col gap-2">
+                            <div class="h-32 w-full overflow-hidden rounded-xl bg-slate-50 flex items-center justify-center">
+                                @if ($prod->imagen)
+                                    <img src="{{ asset('storage/'.$prod->imagen) }}" alt="Imagen {{ $prod->nombreProducto }}" class="h-full w-full object-cover">
+                                @else
+                                    <span class="text-xs text-gray-400">Sin imagen</span>
+                                @endif
+                            </div>
+                            <div class="space-y-1">
+                                <div class="font-semibold text-slate-900">{{ $prod->nombreProducto }}</div>
+                                <div class="text-sm text-slate-500 line-clamp-2">{{ $prod->descripcion }}</div>
+                                <div class="text-sm font-semibold text-slate-900">
+                                    ${{ number_format($prod->precio, 0, ',', '.') }}
+                                </div>
+                                <div class="text-xs text-emerald-700">Stock: {{ $prod->disponibilidad }}</div>
+                            </div>
+
+                            <form method="POST"
+                                  action="{{ route('mesero.pedido.agregar', $mesa->id) }}"
+                                  class="flex items-center gap-2 mt-auto">
+                                @csrf
+                                <input type="hidden" name="producto_id" value="{{ $prod->id }}">
+                                <input type="number" name="cantidad" value="1" min="1"
+                                       class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500" required>
+
+                                <button
+                                    type="submit"
+                                    formmethod="post"
+                                    formaction="{{ route('mesero.pedido.agregar', $mesa->id) }}"
+                                    class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition text-sm font-semibold">
+                                    Agregar
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
 
-        @if($productos->isEmpty())
-            <div class="text-sm text-gray-500">No hay productos configurados.</div>
-        @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($productos as $prod)
-                    <div class="rounded-2xl border border-slate-100 p-3 hover:shadow-md transition bg-white flex flex-col gap-2">
-                        <div class="h-32 w-full overflow-hidden rounded-xl bg-slate-50 flex items-center justify-center">
-                            @if ($prod->imagen)
-                                <img src="{{ asset('storage/'.$prod->imagen) }}" alt="Imagen {{ $prod->nombreProducto }}" class="h-full w-full object-cover">
-                            @else
-                                <span class="text-xs text-gray-400">Sin imagen</span>
-                            @endif
-                        </div>
-                        <div class="space-y-1">
-                            <div class="font-semibold text-slate-900">{{ $prod->nombreProducto }}</div>
-                            <div class="text-sm text-slate-500 line-clamp-2">{{ $prod->descripcion }}</div>
-                            <div class="text-sm font-semibold text-slate-900">
-                                ${{ number_format($prod->precio, 0, ',', '.') }}
-                            </div>
-                            <div class="text-xs text-slate-500">Categoria: {{ $prod->categoria }}</div>
-                            <div class="text-xs text-emerald-700">Stock: {{ $prod->disponibilidad }}</div>
-                        </div>
-
-                        <form method="POST"
-                              action="{{ route('mesero.pedido.agregar', $mesa->id) }}"
-                              class="flex items-center gap-2 mt-auto">
-                            @csrf
-                            <input type="hidden" name="producto_id" value="{{ $prod->id }}">
-                            <input type="number" name="cantidad" value="1" min="1"
-                                   class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500" required>
-
-                            <button
-                                type="submit"
-                                formmethod="post"
-                                formaction="{{ route('mesero.pedido.agregar', $mesa->id) }}"
-                                class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition text-sm font-semibold">
-                                Agregar
-                            </button>
-                        </form>
-                    </div>
-                @endforeach
+        <div class="rounded-3xl border border-slate-200 bg-white shadow-sm p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-slate-900">Bebidas</h2>
+                <span class="text-xs rounded-full bg-slate-100 px-3 py-1 text-slate-600">{{ $bebidas->count() }}</span>
             </div>
-        @endif
+            @if($bebidas->isEmpty())
+                <div class="text-sm text-gray-500">No hay bebidas configuradas.</div>
+            @else
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach($bebidas as $prod)
+                        <div class="rounded-2xl border border-slate-100 p-3 hover:shadow-md transition bg-white flex flex-col gap-2">
+                            <div class="h-32 w-full overflow-hidden rounded-xl bg-slate-50 flex items-center justify-center">
+                                @if ($prod->imagen)
+                                    <img src="{{ asset('storage/'.$prod->imagen) }}" alt="Imagen {{ $prod->nombreProducto }}" class="h-full w-full object-cover">
+                                @else
+                                    <span class="text-xs text-gray-400">Sin imagen</span>
+                                @endif
+                            </div>
+                            <div class="space-y-1">
+                                <div class="font-semibold text-slate-900">{{ $prod->nombreProducto }}</div>
+                                <div class="text-sm text-slate-500 line-clamp-2">{{ $prod->descripcion }}</div>
+                                <div class="text-sm font-semibold text-slate-900">
+                                    ${{ number_format($prod->precio, 0, ',', '.') }}
+                                </div>
+                                <div class="text-xs text-emerald-700">Stock: {{ $prod->disponibilidad }}</div>
+                            </div>
+
+                            <form method="POST"
+                                  action="{{ route('mesero.pedido.agregar', $mesa->id) }}"
+                                  class="flex items-center gap-2 mt-auto">
+                                @csrf
+                                <input type="hidden" name="producto_id" value="{{ $prod->id }}">
+                                <input type="number" name="cantidad" value="1" min="1"
+                                       class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500" required>
+
+                                <button
+                                    type="submit"
+                                    formmethod="post"
+                                    formaction="{{ route('mesero.pedido.agregar', $mesa->id) }}"
+                                    class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition text-sm font-semibold">
+                                    Agregar
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 </x-app-layout>
