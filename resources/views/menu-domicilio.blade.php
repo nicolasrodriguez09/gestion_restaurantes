@@ -77,7 +77,17 @@
                         </div>
                         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                             <h3 class="text-lg font-semibold text-slate-900">Resumen</h3>
-                            <p class="text-sm text-slate-500">Selecciona cantidades y envia. Aparecera en cocina como “En espera”.</p>
+                            <p class="text-sm text-slate-500">Selecciona cantidades y verifica tu pedido antes de enviar.</p>
+                            <div class="mt-3 rounded-xl border border-indigo-100 bg-indigo-50 p-3 text-sm text-slate-800 space-y-2" id="resumen-lista">
+                                <p class="text-xs font-semibold text-indigo-700 uppercase tracking-[0.2em]">Tu pedido</p>
+                                <div class="space-y-1" id="resumen-items">
+                                    <p class="text-xs text-slate-500">Sin items aun.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-indigo-100">
+                                    <span class="text-xs text-slate-500">Estimado</span>
+                                    <span class="font-semibold text-slate-900" id="resumen-total">$0</span>
+                                </div>
+                            </div>
                             <button type="submit" class="mt-4 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition">Enviar pedido a domicilio</button>
                         </div>
                     </div>
@@ -109,7 +119,8 @@
                                             </div>
                                             <div class="flex items-center gap-2 mt-auto">
                                                 <input type="number" name="cantidad[{{ $prod->id }}]" value="{{ old('cantidad.'.$prod->id, 0) }}" min="0"
-                                                       class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500">
+                                                       data-nombre="{{ $prod->nombreProducto }}" data-precio="{{ $prod->precio }}"
+                                                       class="cantidad-input w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500">
                                                 <span class="text-xs text-slate-500">Unidades</span>
                                             </div>
                                         </div>
@@ -144,7 +155,8 @@
                                             </div>
                                             <div class="flex items-center gap-2 mt-auto">
                                                 <input type="number" name="cantidad[{{ $prod->id }}]" value="{{ old('cantidad.'.$prod->id, 0) }}" min="0"
-                                                       class="w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500">
+                                                       data-nombre="{{ $prod->nombreProducto }}" data-precio="{{ $prod->precio }}"
+                                                       class="cantidad-input w-16 border rounded px-2 py-1 text-center focus:border-indigo-500 focus:ring-indigo-500">
                                                 <span class="text-xs text-slate-500">Unidades</span>
                                             </div>
                                         </div>
@@ -157,5 +169,47 @@
             </section>
         </main>
     </div>
+    <script>
+        (function() {
+            const inputs = document.querySelectorAll('.cantidad-input');
+            const lista = document.getElementById('resumen-items');
+            const totalEl = document.getElementById('resumen-total');
+
+            function actualizarResumen() {
+                const seleccion = [];
+                let total = 0;
+                inputs.forEach(inp => {
+                    const qty = parseInt(inp.value, 10) || 0;
+                    if (qty > 0) {
+                        const nombre = inp.dataset.nombre || 'Producto';
+                        const precio = parseFloat(inp.dataset.precio || 0);
+                        const subtotal = precio * qty;
+                        total += subtotal;
+                        seleccion.push({ nombre, qty, subtotal });
+                    }
+                });
+
+                if (!lista) return;
+                if (seleccion.length === 0) {
+                    lista.innerHTML = '<p class="text-xs text-slate-500">Sin items aun.</p>';
+                } else {
+                    lista.innerHTML = seleccion.map(item =>
+                        `<div class="flex items-center justify-between text-sm">
+                            <span>${item.qty} x ${item.nombre}</span>
+                            <span class="font-semibold">$${item.subtotal.toLocaleString('es-CO', {minimumFractionDigits:0})}</span>
+                        </div>`
+                    ).join('');
+                }
+                if (totalEl) {
+                    totalEl.textContent = '$' + total.toLocaleString('es-CO', {minimumFractionDigits:0});
+                }
+            }
+
+            inputs.forEach(inp => {
+                inp.addEventListener('input', actualizarResumen);
+            });
+            actualizarResumen();
+        })();
+    </script>
 </body>
 </html>
