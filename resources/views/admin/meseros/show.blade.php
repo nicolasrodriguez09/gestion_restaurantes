@@ -24,32 +24,37 @@
 
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Pedidos de hoy</h3>
-            <div class="overflow-x-auto rounded-xl border border-slate-100">
-                <table class="min-w-full divide-y divide-slate-100 text-sm">
-                    <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        <tr>
-                            <th class="px-4 py-3 text-left">Pedido</th>
-                            <th class="px-4 py-3 text-left">Mesa</th>
-                            <th class="px-4 py-3 text-left">Fecha</th>
-                            <th class="px-4 py-3 text-left">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @forelse ($pedidosHoy as $pedido)
-                            <tr class="hover:bg-slate-50 transition">
-                                <td class="px-4 py-3">#{{ $pedido->id }}</td>
-                                <td class="px-4 py-3">{{ $pedido->mesa->numeroMesa ?? 'N/D' }}</td>
-                                <td class="px-4 py-3">{{ \Carbon\Carbon::parse($pedido->fechaPedido)->format('d/m H:i') }}</td>
-                                <td class="px-4 py-3">${{ number_format($pedido->totalPago, 2, '.', ',') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-4 py-6 text-center text-sm text-gray-500">No hay pedidos hoy.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            @forelse ($pedidosHoy as $pedido)
+                <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 mb-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-slate-500">Pedido #{{ $pedido->id }}</p>
+                            <p class="text-xs text-slate-500">Mesa: {{ $pedido->mesa->numeroMesa ?? 'N/D' }}</p>
+                            <p class="text-xs text-slate-500">Fecha: {{ \Carbon\Carbon::parse($pedido->fechaPedido)->format('d/m H:i') }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-500">Total</p>
+                            <p class="text-lg font-semibold text-slate-900">${{ number_format($pedido->totalPago, 2, '.', ',') }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 border-t border-slate-100 pt-3">
+                        <p class="text-xs font-semibold text-slate-600 mb-2">Productos</p>
+                        <ul class="space-y-2">
+                            @foreach($pedido->detalles as $det)
+                                <li class="flex items-center gap-3 text-sm text-slate-800">
+                                    @if($det->producto?->imagen)
+                                        <img src="{{ asset('storage/'.$det->producto->imagen) }}" class="h-10 w-10 rounded object-cover">
+                                    @endif
+                                    <span>{{ $det->cantidad }} x {{ $det->producto->nombreProducto ?? 'Producto' }}</span>
+                                    <span class="text-xs text-slate-500">${{ number_format($det->subTotal, 2, '.', ',') }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @empty
+                <div class="text-sm text-gray-500">No hay pedidos hoy.</div>
+            @endforelse
         </div>
     </div>
 </x-app-layout>

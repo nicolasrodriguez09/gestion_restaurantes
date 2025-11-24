@@ -36,6 +36,29 @@ class CocinaController extends Controller
             'estado_id' => 'required|exists:estado_pedido,id',
         ]);
 
+        $estadoActual = Str::lower($pedido->estado->nombreEstado ?? '');
+        if (Str::contains($estadoActual, ['entreg'])) {
+            return back()->with('error', 'No se puede mover un pedido ya entregado.');
+        }
+
+        $estadoDestino = EstadoPedido::findOrFail($request->estado_id);
+        $destinoLower = Str::lower($estadoDestino->nombreEstado);
+
+        if ((Str::contains($destinoLower, ['proceso', 'curso', 'prep'])) && !$pedido->stock_aplicado) {
+            $pedido->load('detalles.producto');
+            foreach ($pedido->detalles as $detalle) {
+                if ($detalle->producto && $detalle->producto->disponibilidad < $detalle->cantidad) {
+                    return back()->with('error', 'Stock insuficiente para ' . ($detalle->producto->nombreProducto ?? 'producto') . '.');
+                }
+            }
+            foreach ($pedido->detalles as $detalle) {
+                if ($detalle->producto) {
+                    $detalle->producto->decrement('disponibilidad', $detalle->cantidad);
+                }
+            }
+            $pedido->stock_aplicado = true;
+        }
+
         $pedido->id_estadoPedido = $request->estado_id;
         $pedido->save();
 

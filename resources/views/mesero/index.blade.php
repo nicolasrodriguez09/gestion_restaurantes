@@ -10,6 +10,14 @@
         </div>
     </div>
 
+    @php
+        $progress = function($pedido) {
+            $nombre = strtolower($pedido->estado->nombreEstado ?? '');
+            return str_contains($nombre, 'listo') || str_contains($nombre, 'entreg') || str_contains($nombre, 'final') ? 100
+                : (str_contains($nombre, 'proc') || str_contains($nombre, 'curso') || str_contains($nombre, 'prep') ? 50 : 0);
+        };
+    @endphp
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Tarjeta: Mesas -->
         <div class="col-span-2 rounded-3xl border border-slate-200 bg-white/90 shadow-sm p-5">
@@ -23,7 +31,7 @@
                     @php
                         $estado = strtolower($mesa->estado->nombreEstado ?? 'libre');
                         $color = str_contains($estado, 'ocup') ? 'border-rose-200 bg-rose-50' : 'border-emerald-200 bg-emerald-50';
-                    @endphp
+@endphp
 
                     <a href="{{ route('mesero.mesa.show', $mesa->id) }}" class="block rounded-2xl border {{ $color }} p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                         <div class="flex items-center justify-between">
@@ -36,12 +44,22 @@
                                 <p class="font-semibold text-slate-900">{{ $mesa->capacidad }}</p>
                             </div>
                         </div>
+                        @php $ultimoPedido = $mesa->pedidos->first(); $porc = $ultimoPedido ? $progress($ultimoPedido) : 0; @endphp
                         <div class="mt-3 flex items-center justify-between text-sm">
                             <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-white/70 text-slate-700">
                                 <span class="h-2 w-2 rounded-full {{ str_contains($estado, 'ocup') ? 'bg-rose-500' : 'bg-emerald-500' }}"></span>
                                 {{ ucfirst($estado) }}
                             </span>
                             <span class="text-xs text-slate-500">Pedidos: {{ $mesa->pedidos->count() }}</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex justify-between text-xs text-slate-500">
+                                <span>Avance pedido</span>
+                                <span>{{ $porc }}%</span>
+                            </div>
+                            <div class="mt-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                                <div class="h-full rounded-full {{ $porc === 100 ? 'bg-emerald-500' : ($porc === 50 ? 'bg-amber-500' : 'bg-slate-300') }}" style="width: {{ $porc }}%"></div>
+                            </div>
                         </div>
                     </a>
                 @endforeach

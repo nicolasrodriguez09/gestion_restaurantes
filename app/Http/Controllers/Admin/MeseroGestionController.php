@@ -62,7 +62,7 @@ class MeseroGestionController extends Controller
 
         $hoy = Carbon::today();
 
-        $pedidosHoy = Pedido::with(['mesa'])
+        $pedidosHoy = Pedido::with(['mesa','detalles.producto'])
             ->where('id_mesero', $mesero->id)
             ->whereDate('fechaPedido', $hoy)
             ->orderByDesc('fechaPedido')

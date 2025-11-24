@@ -24,6 +24,11 @@ class MeseroController extends Controller
             $q->latest()->limit(10);
         }])->orderBy('numeroMesa')->get();
 
+        // oculta pedidos entregados en la vista mesero
+        $mesas->each(function ($mesa) {
+            $mesa->setRelation('pedidos', $mesa->pedidos->filter(fn($p) => !str_contains(strtolower($p->estado->nombreEstado ?? ''), 'entreg')));
+        });
+
         $estadoEnEspera = $this->estadoPorNombre(['espera', 'pend']);
         $pedidosPendientes = $estadoEnEspera
             ? Pedido::with(['mesa', 'mesero'])
@@ -44,7 +49,8 @@ class MeseroController extends Controller
         $pedidos = $mesa->pedidos()
             ->with(['detalles.producto', 'mesero', 'estado'])
             ->latest()
-            ->get();
+            ->get()
+            ->filter(fn($p) => !str_contains(strtolower($p->estado->nombreEstado ?? ''), 'entreg'));
 
         return view('mesero.show', compact('mesa', 'pedidos'));
     }
@@ -118,9 +124,8 @@ class MeseroController extends Controller
             $detalle->save();
 
             $pedido->totalPago = $pedido->detalles()->sum('subTotal');
+            $pedido->stock_aplicado = false; // recalcular stock en proceso
             $pedido->save();
-
-            $producto->decrement('disponibilidad', $data['cantidad']);
         });
 
         return back()->with('ok', 'Producto agregado al pedido.');
@@ -157,11 +162,6 @@ class MeseroController extends Controller
         }
 
         DB::transaction(function () use ($detalle, $producto, $diferencia, $nuevaCantidad) {
-            if ($diferencia > 0) {
-                $producto->decrement('disponibilidad', $diferencia);
-            } elseif ($diferencia < 0) {
-                $producto->increment('disponibilidad', abs($diferencia));
-            }
 
             $detalle->cantidad = $nuevaCantidad;
             $detalle->subTotal = $detalle->cantidad * $detalle->precioUnitario;
@@ -169,6 +169,7 @@ class MeseroController extends Controller
 
             $pedido = $detalle->pedido;
             $pedido->totalPago = $pedido->detalles()->sum('subTotal');
+            $pedido->stock_aplicado = false; // para que cocina recalcule stock al pasar a proceso
             $pedido->save();
         });
 
@@ -192,11 +193,6 @@ class MeseroController extends Controller
         }
 
         DB::transaction(function () use ($pedido) {
-            foreach ($pedido->detalles as $detalle) {
-                if ($detalle->producto) {
-                    $detalle->producto->increment('disponibilidad', $detalle->cantidad);
-                }
-            }
             $pedido->detalles()->delete();
             $pedido->delete();
         });
@@ -232,6 +228,34 @@ class MeseroController extends Controller
         $pedido->save();
 
         return back()->with('ok', 'Pedido marcado como entregado.');
+    }
+
+    // POST: servicio terminado, libera mesa si ultimo pedido esta entregado
+    public function servicioTerminado($mesaId)
+    {
+        $this->ensureEstadosBase();
+
+        $mesa = Mesa::with(['pedidos' => fn($q) => $q->latest()])->findOrFail($mesaId);
+        $ultimo = $mesa->pedidos->first();
+
+        if (!$ultimo) {
+            return back()->with('error', 'No hay pedidos para cerrar.');
+        }
+
+        $estadoUltimo = strtolower($ultimo->estado->nombreEstado ?? '');
+        if (!str_contains($estadoUltimo, 'entreg')) {
+            return back()->with('error', 'El pedido aun no esta entregado.');
+        }
+
+        // limpiar detalles del pedido entregado? no, solo liberamos la mesa
+        $estadoLibre = \App\Models\EstadoMesa::firstOrCreate(
+            ['nombreEstado' => 'Libre'],
+            ['descripcion' => 'Mesa disponible']
+        );
+        $mesa->id_estado = $estadoLibre->id;
+        $mesa->save();
+
+        return redirect()->route('mesero.dashboard')->with('ok', 'Mesa liberada. Servicio terminado.');
     }
 
     /**
