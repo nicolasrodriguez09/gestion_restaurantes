@@ -1,11 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-gray-500">Flujo de cocina</p>
-                <h2 class="font-semibold text-2xl text-gray-900">Gestion de preparacion</h2>
-            </div>
-            <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">Volver al dashboard</a>
+        <div>
+            <p class="text-sm text-gray-500">Flujo de cocina</p>
+            <h2 class="font-semibold text-2xl text-gray-900">Gestion de preparacion</h2>
         </div>
     </x-slot>
 

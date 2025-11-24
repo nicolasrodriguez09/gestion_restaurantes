@@ -5,38 +5,30 @@
             <a href="{{ route('mesero.dashboard') }}" class="text-sm text-indigo-600 hover:underline">&larr; Volver al dashboard</a>
             <h1 class="text-3xl font-bold text-slate-900 mt-2">Mesa #{{ $mesa->numeroMesa }}</h1>
         </div>
-        <div class="flex flex-wrap gap-3">
-            <a href="{{ route('mesero.pedido.nuevo', $mesa->id) }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
-                Hacer pedido
-            </a>
-            <form action="{{ route('mesero.pedido.cancelar', $mesa->id) }}" method="POST" onsubmit="return confirm('Cancelar pedido en espera?');">
-                @csrf
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700">
-                    Cancelar en espera
-                </button>
-            </form>
-            <form action="{{ route('mesero.pedido.cerrar', $mesa->id) }}" method="POST">
-                @csrf
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">
-                    Marcar entregado
-                </button>
-            </form>
-            <form action="{{ route('mesero.mesa.servicio.terminado', $mesa->id) }}" method="POST" onsubmit="return confirm('Marcar servicio terminado y liberar mesa?');">
-                @csrf
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 text-white text-sm font-semibold hover:bg-slate-900">
-                    Servicio terminado
-                </button>
-            </form>
-            <form action="{{ route('mesero.mesa.estado', $mesa->id) }}" method="POST">
-                @csrf
-                @php $esLibre = !str_contains(strtolower($mesa->estado->nombreEstado ?? ''), 'ocup'); @endphp
-                <input type="hidden" name="estado" value="{{ $esLibre ? 'ocupada' : 'libre' }}">
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-200 text-slate-800 text-sm font-semibold hover:bg-slate-300">
-                    {{ $esLibre ? 'Marcar ocupada' : 'Marcar libre' }}
-                </button>
-            </form>
-        </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('mesero.pedido.nuevo', $mesa->id) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+                    Hacer pedido
+                </a>
+                <form action="{{ route('mesero.pedido.cancelar', $mesa->id) }}" method="POST" onsubmit="return confirm('Cancelar pedido en espera?');">
+                    @csrf
+                    <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700">
+                        Cancelar en espera
+                    </button>
+                </form>
+                <form action="{{ route('mesero.pedido.cerrar', $mesa->id) }}" method="POST">
+                    @csrf
+                    <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">
+                        Marcar entregado
+                    </button>
+                </form>
+                <form action="{{ route('mesero.mesa.servicio.terminado', $mesa->id) }}" method="POST" onsubmit="return confirm('Marcar servicio terminado y liberar mesa?');">
+                    @csrf
+                    <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 text-white text-sm font-semibold hover:bg-slate-900">
+                        Servicio terminado
+                    </button>
+                </form>
+            </div>
     </div>
 
     @php

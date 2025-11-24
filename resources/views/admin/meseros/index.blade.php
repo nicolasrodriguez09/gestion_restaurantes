@@ -5,7 +5,7 @@
                 <p class="text-sm text-gray-500">Equipo de piso</p>
                 <h2 class="font-semibold text-2xl text-gray-900">Gestion de meseros</h2>
             </div>
-            <a href="{{ route('admin.meseros.create') }}" class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+            <a href="{{ route('admin.meseros.create') }}" class="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
                 + Nuevo mesero
             </a>
         </div>
