@@ -20,6 +20,9 @@ class Pedido extends Model
         'cliente_telefono',
         'cliente_direccion',
         'cliente_nota',
+        'cliente_lat',
+        'cliente_lng',
+        'cliente_place_id',
     ];
 
     public function mesa()

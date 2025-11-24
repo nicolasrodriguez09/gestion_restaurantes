@@ -34,6 +34,8 @@ class PublicMenuController extends Controller
             'productos' => $productos,
             'comidas' => $productos->reject(fn($p) => str_contains(strtolower($p->categoria ?? ''), 'bebida')),
             'bebidas' => $productos->filter(fn($p) => str_contains(strtolower($p->categoria ?? ''), 'bebida')),
+            'originLat' => config('services.maps.origin_lat'),
+            'originLng' => config('services.maps.origin_lng'),
         ]);
     }
 
@@ -45,6 +47,9 @@ class PublicMenuController extends Controller
             'direccion' => 'required|string|max:255',
             'nota' => 'nullable|string|max:255',
             'cantidad' => 'required|array',
+            'cliente_lat' => 'required|numeric',
+            'cliente_lng' => 'required|numeric',
+            'cliente_place_id' => 'nullable|string|max:255',
         ]);
 
         $cantidades = collect($request->input('cantidad'))
@@ -98,6 +103,9 @@ class PublicMenuController extends Controller
                 'cliente_telefono' => $request->telefono,
                 'cliente_direccion' => $request->direccion,
                 'cliente_nota' => $request->nota,
+                'cliente_lat' => $request->cliente_lat,
+                'cliente_lng' => $request->cliente_lng,
+                'cliente_place_id' => $request->cliente_place_id,
             ]);
 
             $total = 0;

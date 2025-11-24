@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'maps' => [
+        'origin_lat' => env('RESTAURANT_LAT', 4.421818793774854),
+        'origin_lng' => env('RESTAURANT_LNG', -76.15403417128903),
+    ],
+
 ];

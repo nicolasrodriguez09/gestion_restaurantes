@@ -6,7 +6,16 @@
         </div>
     </x-slot>
 
-    <div class="py-10 max-w-6xl mx-auto px-6 space-y-6">
+    @php
+        $progress = function($pedido) {
+            $estado = strtolower($pedido->estado->nombreEstado ?? '');
+            return str_contains($estado, 'entreg') ? 100
+                : (str_contains($estado, 'listo') ? 75
+                : (str_contains($estado, 'espera') || str_contains($estado, 'pend') ? 35 : 10));
+        };
+    @endphp
+
+    <div class="py-10 max-w-6xl mx-auto px-6 space-y-8">
         @if(session('ok'))
             <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 text-sm">
                 {{ session('ok') }}
@@ -19,9 +28,15 @@
         @endif
 
         <div class="space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-slate-900">Por entregar</h3>
-                <span class="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700">Pendientes: {{ $pendientes->count() }}</span>
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">Ruta</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Por entregar</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-3 py-1 rounded-full bg-amber-100 text-amber-700">Pendientes: {{ $pendientes->count() }}</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-700">Entregados: {{ $entregados->count() }}</span>
+                </div>
             </div>
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @forelse($pendientes as $pedido)
@@ -31,10 +46,11 @@
                              (str_contains($estado, 'espera') ? 'bg-amber-100 text-amber-700' :
                              (str_contains($estado, 'entreg') ? 'bg-slate-200 text-slate-700' : 'bg-slate-100 text-slate-700'));
                     $ready = str_contains($estado, 'listo');
+                    $porc = $progress($pedido);
                 @endphp
-                <a href="{{ route('domiciliario.pedido.show', $pedido->id) }}" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-                    <div class="flex justify-between items-start">
-                        <div>
+                <a href="{{ route('domiciliario.pedido.show', $pedido->id) }}" class="rounded-2xl border border-indigo-100 bg-white/80 backdrop-blur shadow-sm hover:shadow-md transition p-5 space-y-3">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="space-y-1">
                             <p class="text-xs text-slate-500">Pedido #{{ $pedido->id }}</p>
                             <p class="text-sm font-semibold text-slate-900">{{ $pedido->cliente_nombre ?? 'Cliente' }}</p>
                             <p class="text-xs text-slate-500 flex items-center gap-1">
@@ -50,13 +66,24 @@
                         <span>{{ \Carbon\Carbon::parse($pedido->fechaPedido)->format('d/m H:i') }}</span>
                         <span class="font-semibold text-slate-900 text-sm">${{ number_format($pedido->totalPago, 2, '.', ',') }}</span>
                     </div>
-                    <div class="mt-3 flex items-center gap-2 text-xs">
-                        <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700">Productos {{ $pedido->detalles->count() }}</span>
-                        @if($ready)
-                            <span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">Listo para entregar</span>
-                        @else
-                            <span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700">En cocina</span>
-                        @endif
+                    <div class="mt-3 space-y-2">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="px-2 py-1 rounded-full bg-slate-100 text-slate-700">Productos {{ $pedido->detalles->count() }}</span>
+                            @if($ready)
+                                <span class="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">Listo para entregar</span>
+                            @else
+                                <span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700">En cocina</span>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] text-slate-500">
+                                <span>Avance del pedido</span>
+                                <span>{{ $porc }}%</span>
+                            </div>
+                            <div class="mt-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                                <div class="h-full rounded-full {{ $porc >= 75 ? 'bg-emerald-500' : ($porc >= 35 ? 'bg-amber-500' : 'bg-slate-400') }}" style="width: {{ $porc }}%"></div>
+                            </div>
+                        </div>
                     </div>
                 </a>
             @empty
