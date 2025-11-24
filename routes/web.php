@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cafeagregar;
 use App\Http\Controllers\Mesero\MeseroController;
 use App\Http\Controllers\PublicMenuController;
+use App\Http\Controllers\Domiciliario\DomiciliarioController;
+use App\Http\Controllers\Admin\DomiciliarioGestionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +25,7 @@ Route::get('/dashboard', function () {
     return match ($user->role) {
         'admin' => redirect()->route('admin.dashboard'),
         'mesero' => redirect()->route('mesero.dashboard'),
+        'domiciliario' => redirect()->route('domiciliario.dashboard'),
         default => view('dashboard'),
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -33,6 +36,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('mesas', AdminMesaController::class)->except(['show']);
     Route::resource('productos', AdminProductoController::class)->except(['show']);
     Route::resource('meseros', \App\Http\Controllers\Admin\MeseroGestionController::class);
+    Route::resource('domiciliarios', DomiciliarioGestionController::class);
     Route::get('cocina', [\App\Http\Controllers\Admin\CocinaController::class, 'index'])->name('cocina.index');
     Route::post('cocina/pedidos/{pedido}/estado', [\App\Http\Controllers\Admin\CocinaController::class, 'cambiarEstado'])->name('cocina.pedidos.estado');
     Route::get('domicilios', [\App\Http\Controllers\Admin\DomicilioController::class, 'index'])->name('domicilios.index');
@@ -53,6 +57,13 @@ Route::middleware(['auth', 'role:mesero'])->prefix('mesero')->name('mesero.')->g
     Route::post('mesa/{id}/pedido/cerrar', [MeseroController::class, 'cerrarPedido'])->name('pedido.cerrar');
     Route::post('mesa/{id}/servicio/terminado', [MeseroController::class, 'servicioTerminado'])->name('mesa.servicio.terminado');
     Route::post('mesa/{id}/estado', [MeseroController::class, 'cambiarEstadoMesa'])->name('mesa.estado');
+});
+
+// ----------------- RUTAS PARA DOMICILIARIO -----------------
+Route::middleware(['auth', 'role:domiciliario'])->prefix('domiciliario')->name('domiciliario.')->group(function () {
+    Route::get('dashboard', [DomiciliarioController::class, 'index'])->name('dashboard');
+    Route::get('pedido/{id}', [DomiciliarioController::class, 'show'])->name('pedido.show');
+    Route::post('pedido/{id}/entregar', [DomiciliarioController::class, 'entregar'])->name('pedido.entregar');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

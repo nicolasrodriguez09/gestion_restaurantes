@@ -10,6 +10,7 @@
                 @php
                     $isAdmin = auth()->check() && auth()->user()->role === 'admin';
                     $isMesero = auth()->check() && auth()->user()->role === 'mesero';
+                    $isDomiciliario = auth()->check() && auth()->user()->role === 'domiciliario';
                 @endphp
 
                 <div class="hidden md:flex items-center gap-3 text-sm font-semibold">
@@ -18,10 +19,14 @@
                         <a href="{{ route('admin.mesas.index') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('admin.mesas.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Mesas</a>
                         <a href="{{ route('admin.productos.index') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('admin.productos.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Productos</a>
                         <a href="{{ route('admin.meseros.index') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('admin.meseros.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Meseros</a>
+                        <a href="{{ route('admin.domiciliarios.index') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('admin.domiciliarios.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Domiciliarios</a>
                         <a href="{{ route('admin.cocina.index') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('admin.cocina.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Cocina</a>
                     @endif
                     @if($isMesero)
                         <a href="{{ route('mesero.dashboard') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('mesero.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Mesero</a>
+                    @endif
+                    @if($isDomiciliario)
+                        <a href="{{ route('domiciliario.dashboard') }}" class="px-3 py-1.5 rounded-full {{ request()->routeIs('domiciliario.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Domicilios</a>
                     @endif
                 </div>
             </div>
@@ -54,10 +59,14 @@
                 <a href="{{ route('admin.mesas.index') }}" class="block px-3 py-2 rounded {{ request()->routeIs('admin.mesas.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Mesas</a>
                 <a href="{{ route('admin.productos.index') }}" class="block px-3 py-2 rounded {{ request()->routeIs('admin.productos.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Productos</a>
                 <a href="{{ route('admin.meseros.index') }}" class="block px-3 py-2 rounded {{ request()->routeIs('admin.meseros.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Meseros</a>
+                <a href="{{ route('admin.domiciliarios.index') }}" class="block px-3 py-2 rounded {{ request()->routeIs('admin.domiciliarios.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Domiciliarios</a>
                 <a href="{{ route('admin.cocina.index') }}" class="block px-3 py-2 rounded {{ request()->routeIs('admin.cocina.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Cocina</a>
             @endif
             @if($isMesero)
                 <a href="{{ route('mesero.dashboard') }}" class="block px-3 py-2 rounded {{ request()->routeIs('mesero.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Mesero</a>
+            @endif
+            @if($isDomiciliario)
+                <a href="{{ route('domiciliario.dashboard') }}" class="block px-3 py-2 rounded {{ request()->routeIs('domiciliario.*') ? 'bg-indigo-100 text-indigo-700' : 'text-slate-700 hover:bg-slate-100' }}">Domicilios</a>
             @endif
             <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded text-slate-700 hover:bg-slate-100">{{ __('Profile') }}</a>
             <form method="POST" action="{{ route('logout') }}">

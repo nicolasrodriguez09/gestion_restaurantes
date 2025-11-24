@@ -19,6 +19,7 @@
                             <th class="px-4 py-3 text-left">Cliente</th>
                             <th class="px-4 py-3 text-left">Direccion</th>
                             <th class="px-4 py-3 text-left">Contacto</th>
+                            <th class="px-4 py-3 text-left">Domiciliario</th>
                             <th class="px-4 py-3 text-left">Nota</th>
                             <th class="px-4 py-3 text-left">Estado</th>
                             <th class="px-4 py-3 text-left">Fecha</th>
@@ -34,6 +35,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-slate-700">{{ $pedido->cliente_direccion ?? 'N/D' }}</td>
                                 <td class="px-4 py-3 text-slate-700">{{ $pedido->cliente_telefono ?? '-' }}</td>
+                                <td class="px-4 py-3 text-slate-700">{{ $pedido->domiciliario->name ?? 'Sin asignar' }}</td>
                                 <td class="px-4 py-3 text-xs text-slate-500">{{ $pedido->cliente_nota ?? '-' }}</td>
                                 @php
                                     $estado = strtolower($pedido->estado->nombreEstado ?? '');
@@ -50,7 +52,7 @@
                                 <td class="px-4 py-3 text-right font-semibold text-slate-900">${{ number_format($pedido->totalPago, 2, '.', ',') }}</td>
                             </tr>
                             <tr class="bg-slate-50/60">
-                                <td colspan="6" class="px-4 py-3">
+                                <td colspan="7" class="px-4 py-3">
                                     <div class="flex flex-wrap gap-2 text-xs text-slate-700">
                                         @foreach($pedido->detalles as $det)
                                             <span class="inline-flex items-center gap-1 rounded-full bg-white border border-slate-200 px-3 py-1">

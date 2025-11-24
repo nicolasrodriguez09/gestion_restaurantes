@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pedido::class, 'id_mesero');
     }
+
+    public function pedidosDomiciliario()
+    {
+        return $this->hasMany(Pedido::class, 'id_domiciliario');
+    }
 }

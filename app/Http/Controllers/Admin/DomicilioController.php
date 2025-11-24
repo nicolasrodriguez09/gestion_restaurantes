@@ -9,7 +9,7 @@ class DomicilioController extends Controller
 {
     public function index()
     {
-        $domicilios = Pedido::with(['detalles.producto','estado'])
+        $domicilios = Pedido::with(['detalles.producto','estado','domiciliario'])
             ->whereHas('mesa', fn($q) => $q->where('numeroMesa', 9999))
             ->orderByDesc('fechaPedido')
             ->paginate(15);
