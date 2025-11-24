@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mesero;
 use App\Http\Controllers\Controller;
 use App\Models\DetallePedido;
 use App\Models\EstadoPedido;
+use App\Models\EstadoMesa;
 use App\Models\Mesa;
 use App\Models\Pedido;
 use App\Models\Producto;
@@ -225,6 +226,7 @@ class MeseroController extends Controller
         );
 
         $pedido->id_estadoPedido = $estadoEntregado->id;
+        $pedido->stock_aplicado = true;
         $pedido->save();
 
         return back()->with('ok', 'Pedido marcado como entregado.');
@@ -256,6 +258,27 @@ class MeseroController extends Controller
         $mesa->save();
 
         return redirect()->route('mesero.dashboard')->with('ok', 'Mesa liberada. Servicio terminado.');
+    }
+
+    // POST: cambiar estado de mesa (libre/ocupada)
+    public function cambiarEstadoMesa(Request $request, $mesaId)
+    {
+        $request->validate([
+            'estado' => 'required|in:libre,ocupada',
+        ]);
+
+        $mesa = Mesa::findOrFail($mesaId);
+        $nombreEstado = $request->estado === 'libre' ? 'Libre' : 'Ocupada';
+
+        $estadoMesa = EstadoMesa::firstOrCreate(
+            ['nombreEstado' => $nombreEstado],
+            ['descripcion' => $nombreEstado]
+        );
+
+        $mesa->id_estado = $estadoMesa->id;
+        $mesa->save();
+
+        return back()->with('ok', 'Mesa actualizada a estado: '.$nombreEstado);
     }
 
     /**

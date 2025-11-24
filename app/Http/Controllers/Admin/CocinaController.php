@@ -17,6 +17,7 @@ class CocinaController extends Controller
         $catEsperando = $estados->filter(fn ($e) => Str::contains(Str::lower($e->nombreEstado), ['espera', 'pend']));
         $catProceso = $estados->filter(fn ($e) => Str::contains(Str::lower($e->nombreEstado), ['proceso', 'curso', 'prep']));
         $catListo = $estados->filter(fn ($e) => Str::contains(Str::lower($e->nombreEstado), ['listo', 'entrega', 'final']));
+        $catEntregado = $estados->filter(fn ($e) => Str::contains(Str::lower($e->nombreEstado), ['entreg']));
 
         $pedidos = Pedido::with(['mesa', 'estado', 'detalles.producto'])
             ->whereIn('id_estadoPedido', $estados->keys())
@@ -25,9 +26,10 @@ class CocinaController extends Controller
 
         $espera = $pedidos->whereIn('id_estadoPedido', $catEsperando->keys());
         $proceso = $pedidos->whereIn('id_estadoPedido', $catProceso->keys());
-        $listo = $pedidos->whereIn('id_estadoPedido', $catListo->keys());
+        $entregados = $pedidos->whereIn('id_estadoPedido', $catEntregado->keys());
+        $listo = $pedidos->whereIn('id_estadoPedido', $catListo->keys())->reject(fn($p) => $entregados->contains('id', $p->id));
 
-        return view('admin.cocina.index', compact('espera', 'proceso', 'listo', 'catEsperando', 'catProceso', 'catListo'));
+        return view('admin.cocina.index', compact('espera', 'proceso', 'listo', 'entregados', 'catEsperando', 'catProceso', 'catListo', 'catEntregado'));
     }
 
     public function cambiarEstado(Request $request, Pedido $pedido)

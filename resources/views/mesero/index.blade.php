@@ -44,6 +44,16 @@
                                 <p class="font-semibold text-slate-900">{{ $mesa->capacidad }}</p>
                             </div>
                         </div>
+                        <div class="mt-2">
+                            <form action="{{ route('mesero.mesa.estado', $mesa->id) }}" method="POST" class="inline-flex gap-2 items-center text-xs">
+                                @csrf
+                                @php $esLibre = !str_contains($estado, 'ocup'); @endphp
+                                <input type="hidden" name="estado" value="{{ $esLibre ? 'ocupada' : 'libre' }}">
+                                <button class="rounded-full px-3 py-1 {{ $esLibre ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-white' }} hover:opacity-90">
+                                    {{ $esLibre ? 'Marcar ocupada' : 'Marcar libre' }}
+                                </button>
+                            </form>
+                        </div>
                         @php $ultimoPedido = $mesa->pedidos->first(); $porc = $ultimoPedido ? $progress($ultimoPedido) : 0; @endphp
                         <div class="mt-3 flex items-center justify-between text-sm">
                             <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 bg-white/70 text-slate-700">

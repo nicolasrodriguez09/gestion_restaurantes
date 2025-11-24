@@ -28,6 +28,14 @@
                     Servicio terminado
                 </button>
             </form>
+            <form action="{{ route('mesero.mesa.estado', $mesa->id) }}" method="POST">
+                @csrf
+                @php $esLibre = !str_contains(strtolower($mesa->estado->nombreEstado ?? ''), 'ocup'); @endphp
+                <input type="hidden" name="estado" value="{{ $esLibre ? 'ocupada' : 'libre' }}">
+                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-200 text-slate-800 text-sm font-semibold hover:bg-slate-300">
+                    {{ $esLibre ? 'Marcar ocupada' : 'Marcar libre' }}
+                </button>
+            </form>
         </div>
     </div>
 

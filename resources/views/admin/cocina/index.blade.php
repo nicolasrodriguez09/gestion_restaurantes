@@ -10,7 +10,7 @@
     </x-slot>
 
     <div class="py-8 max-w-7xl mx-auto px-6 space-y-6">
-        <div class="grid gap-6 md:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div class="flex items-center justify-between mb-3">
                     <div>
@@ -136,6 +136,39 @@
                         </div>
                     @empty
                         <p class="text-sm text-gray-500">Sin pedidos listos.</p>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-sm text-gray-500">Entregados</p>
+                        <h3 class="text-lg font-semibold text-gray-900">Finalizados</h3>
+                    </div>
+                    <span class="rounded-full bg-slate-200 text-slate-700 px-3 py-1 text-xs font-semibold">{{ $entregados->count() }}</span>
+                </div>
+                <div class="space-y-3 max-h-[70vh] overflow-auto pr-1">
+                    @forelse ($entregados as $pedido)
+                        <div class="rounded-xl border border-slate-100 p-3 bg-slate-50/60">
+                            <div class="flex items-center justify-between">
+                                <p class="font-semibold text-gray-900">Pedido #{{ $pedido->id }}</p>
+                                <p class="text-xs text-gray-500">Mesa {{ $pedido->mesa->numeroMesa ?? 'N/D' }}</p>
+                            </div>
+                            <p class="text-xs text-gray-500">Estado: {{ $pedido->estado->nombreEstado ?? 'N/D' }}</p>
+                            <ul class="mt-2 space-y-1 text-sm text-gray-800">
+                                @foreach($pedido->detalles as $det)
+                                    <li class="flex items-center gap-2">
+                                        @if($det->producto?->imagen)
+                                            <img src="{{ asset('storage/'.$det->producto->imagen) }}" alt="{{ $det->producto->nombreProducto }}" class="h-10 w-10 rounded object-cover border">
+                                        @endif
+                                        <span>{{ $det->cantidad }} x {{ $det->producto->nombreProducto ?? 'Producto' }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-500">Sin pedidos entregados.</p>
                     @endforelse
                 </div>
             </div>
