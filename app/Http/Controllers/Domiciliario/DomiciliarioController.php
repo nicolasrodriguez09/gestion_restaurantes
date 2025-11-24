@@ -32,8 +32,19 @@ class DomiciliarioController extends Controller
 
     public function entregar(Request $request, $id)
     {
-        $pedido = Pedido::whereHas('mesa', fn($q) => $q->where('numeroMesa', 9999))
+        $pedido = Pedido::with('estado')
+            ->whereHas('mesa', fn($q) => $q->where('numeroMesa', 9999))
             ->findOrFail($id);
+
+        $estadoActual = strtolower($pedido->estado->nombreEstado ?? '');
+
+        if (str_contains($estadoActual, 'entreg')) {
+            return back()->with('error', 'Este pedido ya fue marcado como entregado.');
+        }
+
+        if (!str_contains($estadoActual, 'listo')) {
+            return back()->with('error', 'Solo puedes marcar como entregado un pedido en estado listo.');
+        }
 
         $estadoEntregado = EstadoPedido::firstOrCreate(
             ['nombreEstado' => 'Entregado'],
