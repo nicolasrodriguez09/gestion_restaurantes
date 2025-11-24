@@ -116,6 +116,31 @@
                         </div>
                     </div>
                 </a>
+
+                <a href="{{ route('admin.domicilios.index') }}"
+                   class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-100 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="p-6 relative">
+                        <div class="flex items-center gap-4">
+                            <span class="p-3 rounded-2xl bg-orange-100 text-orange-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1.5 9a2 2 0 002 1.7h7a2 2 0 002-1.7L19 7M7 16h10M8 10h8" />
+                                </svg>
+                            </span>
+                            <div>
+                                <p class="text-sm text-gray-500">Domicilios</p>
+                                <h3 class="text-xl font-bold text-gray-900">Pedidos para entrega</h3>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600">Consulta clientes, direcciones y estado de pedidos a domicilio.</p>
+                        <div class="mt-6 flex items-center justify-between text-sm font-semibold text-orange-600">
+                            <span>Gestionar domicilios</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <div class="grid gap-6 md:grid-cols-3">

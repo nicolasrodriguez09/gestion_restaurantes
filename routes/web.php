@@ -7,10 +7,15 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cafeagregar;
 use App\Http\Controllers\Mesero\MeseroController;
+use App\Http\Controllers\PublicMenuController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/menu', [PublicMenuController::class, 'index'])->name('menu');
+Route::get('/menu/domicilio', [PublicMenuController::class, 'domicilio'])->name('menu.domicilio');
+Route::post('/menu/pedido', [PublicMenuController::class, 'store'])->name('menu.pedido');
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
@@ -30,6 +35,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('meseros', \App\Http\Controllers\Admin\MeseroGestionController::class);
     Route::get('cocina', [\App\Http\Controllers\Admin\CocinaController::class, 'index'])->name('cocina.index');
     Route::post('cocina/pedidos/{pedido}/estado', [\App\Http\Controllers\Admin\CocinaController::class, 'cambiarEstado'])->name('cocina.pedidos.estado');
+    Route::get('domicilios', [\App\Http\Controllers\Admin\DomicilioController::class, 'index'])->name('domicilios.index');
 });
 
 // ----------------- RUTAS PARA MESERO -----------------

@@ -15,6 +15,10 @@ class Pedido extends Model
         'fechaPedido',
         'totalPago',
         'stock_aplicado',
+        'cliente_nombre',
+        'cliente_telefono',
+        'cliente_direccion',
+        'cliente_nota',
     ];
 
     public function mesa()

@@ -24,6 +24,7 @@
                     <a href="#panorama" class="hover:text-indigo-600">Panorama</a>
                     <a href="#flujos" class="hover:text-indigo-600">Flujos</a>
                     <a href="#tecnologia" class="hover:text-indigo-600">Tecnologia</a>
+                    <a href="{{ route('menu') }}" class="hover:text-indigo-600">Menu publico</a>
                 </div>
                 <div class="flex items-center gap-3 text-sm font-semibold">
                     @auth
@@ -48,6 +49,7 @@
                         <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Estado de mesas</span>
                         <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1"><span class="h-2 w-2 rounded-full bg-indigo-500"></span>Flujo de cocina</span>
                         <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1"><span class="h-2 w-2 rounded-full bg-amber-500"></span>Inventario y precios</span>
+                        <a href="{{ route('menu') }}" class="inline-flex items-center gap-2 rounded-full bg-indigo-600 text-white px-3 py-1 hover:bg-indigo-700">Ver menu</a>
                     </div>
                 </div>
                 <div class="relative">

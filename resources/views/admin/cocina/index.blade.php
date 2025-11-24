@@ -21,7 +21,7 @@
                         <div class="rounded-xl border border-slate-100 p-3 bg-amber-50/40">
                             <div class="flex items-center justify-between">
                                 <p class="font-semibold text-gray-900">Pedido #{{ $pedido->id }}</p>
-                                <p class="text-xs text-gray-500">Mesa {{ $pedido->mesa->numeroMesa ?? 'N/D' }}</p>
+                                <p class="text-xs text-gray-500">{{ ($pedido->mesa->numeroMesa ?? '') == 9999 ? 'Domicilio' : 'Mesa '.($pedido->mesa->numeroMesa ?? 'N/D') }}</p>
                             </div>
                             <p class="text-xs text-gray-500">Estado: {{ $pedido->estado->nombreEstado ?? 'N/D' }}</p>
                             <ul class="mt-2 space-y-1 text-sm text-gray-800">
@@ -64,7 +64,7 @@
                         <div class="rounded-xl border border-slate-100 p-3 bg-indigo-50/40">
                             <div class="flex items-center justify-between">
                                 <p class="font-semibold text-gray-900">Pedido #{{ $pedido->id }}</p>
-                                <p class="text-xs text-gray-500">Mesa {{ $pedido->mesa->numeroMesa ?? 'N/D' }}</p>
+                                <p class="text-xs text-gray-500">{{ ($pedido->mesa->numeroMesa ?? '') == 9999 ? 'Domicilio' : 'Mesa '.($pedido->mesa->numeroMesa ?? 'N/D') }}</p>
                             </div>
                             <p class="text-xs text-gray-500">Estado: {{ $pedido->estado->nombreEstado ?? 'N/D' }}</p>
                             <ul class="mt-2 space-y-1 text-sm text-gray-800">
@@ -107,7 +107,7 @@
                         <div class="rounded-xl border border-slate-100 p-3 bg-emerald-50/40">
                             <div class="flex items-center justify-between">
                                 <p class="font-semibold text-gray-900">Pedido #{{ $pedido->id }}</p>
-                                <p class="text-xs text-gray-500">Mesa {{ $pedido->mesa->numeroMesa ?? 'N/D' }}</p>
+                                <p class="text-xs text-gray-500">{{ ($pedido->mesa->numeroMesa ?? '') == 9999 ? 'Domicilio' : 'Mesa '.($pedido->mesa->numeroMesa ?? 'N/D') }}</p>
                             </div>
                             <p class="text-xs text-gray-500">Estado: {{ $pedido->estado->nombreEstado ?? 'N/D' }}</p>
                             <ul class="mt-2 space-y-1 text-sm text-gray-800">
